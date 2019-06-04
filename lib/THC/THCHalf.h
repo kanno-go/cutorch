@@ -4,7 +4,7 @@
 #include "THCGeneral.h"
 
 /* We compile with CudaHalfTensor support if we have this: */
-#if CUDA_VERSION >= 7050 || CUDA_HAS_FP16
+#if (CUDA_VERSION >= 7050 && CUDA_VERSION < 10000) || CUDA_HAS_FP16
 #define CUDA_HALF_TENSOR 1
 #endif
 

@@ -939,6 +939,7 @@ void THCHeapUpdate(THCState *state, ptrdiff_t size) {
 #include "THCAllocator.c"
 
 /* from THCHalf.h */
+#ifdef CUDA_HALF_TENSOR
 
 half THC_float2half(float f)
 {
@@ -953,3 +954,6 @@ float  THC_half2float(half h)
   TH_halfbits2float(&h.x, &f);
   return f;
 }
+
+#endif
+
