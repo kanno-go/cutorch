@@ -12,7 +12,13 @@
 #include "THCReduceApplyUtils.cuh"
 
 // Threads per thread block
-#define THC_NONCONTIG_REDUCE_BLOCK_SIZE 32 * 16
+#if __CUDA_ARCH__ >= 750
+#define THC_NONCONTIG_REDUCE_BLOCK_SIZE (32 * 16)
+#define THC_NONCONTIG_REDUCE_BLOCKS_PER_SM 2
+#else
+#define THC_NONCONTIG_REDUCE_BLOCK_SIZE (32 * 16)
+#define THC_NONCONTIG_REDUCE_BLOCKS_PER_SM 4
+#endif
 
 template <typename IndexType>
 __device__ __forceinline__ IndexType getReduceNoncontigDimSliceIndex() {
@@ -27,7 +33,7 @@ template <typename ModifyOp,
           typename IndexType,
           int ADims, int BDims>
 #if __CUDA_ARCH__ >= 350
-__launch_bounds__(32 * 16, 4)
+__launch_bounds__(THC_NONCONTIG_REDUCE_BLOCK_SIZE, THC_NONCONTIG_REDUCE_BLOCKS_PER_SM)
 #endif
 __global__ void
 kernelReduceNoncontigDim(TensorInfo<T, IndexType> out,
@@ -324,5 +330,6 @@ bool THC_reduceDim(THCState* state,
 }
 
 #undef THC_NONCONTIG_REDUCE_BLOCK_SIZE
+#undef THC_NONCONTIG_REDUCE_BLOCKS_PER_SM
 
 #endif // THC_REDUCE_INC
