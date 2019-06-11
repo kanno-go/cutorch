@@ -8,7 +8,7 @@
 THC_API void THCTensor_(sortKeyValueInplace)(THCState* state,
                                            THCTensor* key,
                                            THCudaLongTensor* value,
-                                           int dim, bool dir) {
+                                           int dim, int dir) {
   THLongStorage *valueSize = THCudaLongTensor_newSizeOf(state, value);
   THArgCheck(THCTensor_(isSize)(state, key, valueSize), 2,
              "Key tensor must have same size as value tensor");
@@ -157,7 +157,7 @@ void sortViaThrust(THCState* state,
                    THCTensor* sorted,
                    THCudaLongTensor* indices,
                    THCTensor* input,
-                   int dim, bool dir) {
+                   int dim, int dir) {
   long nDims = THCTensor_(nDimension)(state, input);
 
   ptrdiff_t totalElements = THCTensor_(nElement)(state, input);
@@ -327,7 +327,7 @@ THC_API void THCTensor_(sort)(THCState* state,
   } else {
     // Otherwise, fall back upon Thrust, which handles all other cases
     // (potentially slowly, with extra copies/memory allocations)
-    sortViaThrust(state, sorted, indices, input, dim, (bool) order);
+    sortViaThrust(state, sorted, indices, input, dim, order);
   }
 
   THCudaCheck(cudaGetLastError());

@@ -117,7 +117,7 @@ TensorUtils<TENSOR_TYPE>::getDims(THCState* state,                      \
 bool                                                                    \
 TensorUtils<TENSOR_TYPE>::isContiguous(THCState* state,                 \
                                        TENSOR_TYPE* t) {                \
-  return TENSOR_TYPE##_isContiguous(state, t);                          \
+  return (TENSOR_TYPE##_isContiguous(state, t) != 0);                   \
 }                                                                       \
                                                                         \
 bool                                                                    \
