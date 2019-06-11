@@ -935,7 +935,11 @@ static int cutorch_isManagedPtr(lua_State *L)
     lua_pushboolean(L, 0);
   } else {
     THCudaCheck(res);
+#if CUDART_VERSION < 10000
     lua_pushboolean(L, attributes.isManaged);
+#else
+    lua_pushboolean(L, (attr.type == cudaMemoryTypeManaged) ? 1 : 0);
+#endif
   }
   return 1;
 }
