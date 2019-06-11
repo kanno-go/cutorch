@@ -92,10 +92,10 @@ __device__ __forceinline__ T WARP_SHFL_DOWN(T value, unsigned int delta, int wid
 #endif
 }
 
-__device__ __forceinline__ bool WARP_ANY(bool cond)
+__device__ __forceinline__ bool WARP_ANY(bool cond, unsigned int mask = 0xffffffff)
 {
 #if CUDA_VERSION >= 9000
-    return (bool)__any_sync(0xffffffff, (int)cond);
+    return (bool)__any_sync(mask, (int)cond);
 #else
     return __any(cond);
 #endif
